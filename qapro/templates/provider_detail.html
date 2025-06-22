@@ -1,0 +1,33 @@
+<!doctype html>
+<title>Provider Detail</title>
+<h1>{{ provider.name }}</h1>
+<p>{{ provider.email }}</p>
+<h2>Tasks</h2>
+<form method="post" action="{{ url_for('add_task', provider_id=provider.id) }}">
+    <label>Title <input name="title"></label>
+    <input type="submit" value="Add Task">
+</form>
+<ul>
+{% for t in tasks %}
+    <li>
+        {{ t.title }} {% if not t.completed %}<a href="{{ url_for('complete_task', task_id=t.id) }}">complete</a>{% else %}✅{% endif %}
+    </li>
+{% else %}
+    <li>No tasks yet.</li>
+{% endfor %}
+</ul>
+<h2>Documents</h2>
+<form method="post" action="{{ url_for('upload', provider_id=provider.id) }}" enctype="multipart/form-data">
+    <input type="file" name="document">
+    <input type="submit" value="Upload">
+</form>
+<ul>
+{% for d in docs %}
+    <li>{{ d.filename }}</li>
+{% else %}
+    <li>No documents.</li>
+{% endfor %}
+</ul>
+<a href="{{ url_for('audit', provider_id=provider.id) }}">Run Audit</a>
+<p>{% with messages = get_flashed_messages() %}{% if messages %}{% for m in messages %}<div>{{ m }}</div>{% endfor %}{% endif %}{% endwith %}</p>
+<a href="{{ url_for('index') }}">Back to providers</a>
